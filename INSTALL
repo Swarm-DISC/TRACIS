@@ -1,0 +1,15 @@
+A C compiler is required, e.g. GCC. Requires CMake 3.0 if building with CMake (recommended).
+
+Requires the NASA CDF C Library and the UCalgary TIIM EFI TII Level 0 processing C library.
+
+Compile and run on a unix operating system.
+
+Both libraries are installed when building a docker image using the Docker/docker-build.sh script.
+
+$ git clone https://github.com/Swarm-DISC/TRACIS
+$ mkdir -p TRACIS/build
+$ cd TRACIS/build
+$ cmake ..
+$ make install
+
+This will put the binary tracis in your $HOME/bin directory.

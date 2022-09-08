@@ -1,0 +1,5 @@
+**/.vscode
+build
+docs/~*.docx
+.DS_Store
+example
