@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
     if (argc != 4)
     {
-        fprintf(stdout, "usage: %s directory satelliteLetter datasetVersion\n", argv[0]);
+        fprintf(stderr, "usage: %s directory satelliteLetter datasetVersion\n", argv[0]);
         exit(1);
     }
     const char *directory = argv[1];
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
     FTS * fts = fts_open(searchPath, FTS_PHYSICAL | FTS_NOCHDIR, NULL);     
     if (fts == NULL)
     {
-        printf("Could not open directory %s for reading.", directory);
+        fprintf(stderr, "Could not open directory %s for reading.", directory);
             exit(EXIT_FAILURE);
     }
     FTSENT * f = fts_read(fts);
@@ -120,17 +120,17 @@ int main(int argc, char* argv[])
     }
     if (nFiles == 0)
     {
-        fprintf(stdout, "Swarm %s: no TRACIS TISL1B files found.\n", satelliteLetter);
+        fprintf(stderr, "Swarm %s: no TRACIS TISL1B files found.\n", satelliteLetter);
         exit(EXIT_SUCCESS);
     }
 
-    fprintf(stdout, "found %ld files\n", nFiles);
+    fprintf(stderr, "found %ld files\n", nFiles);
     // Reopen file listing for processing
     fts_close(fts);
     fts = fts_open(searchPath, FTS_PHYSICAL | FTS_NOCHDIR, NULL);     
     if (fts == NULL)
     {
-        printf("Could not open directory %s for reading.", directory);
+        fprintf(stderr, "Could not open directory %s for reading.", directory);
             exit(EXIT_FAILURE);
     }
     f = fts_read(fts);
@@ -155,8 +155,10 @@ int main(int argc, char* argv[])
             status = loadData(f->fts_path, dataBuffers, &nRecs);
             if (nRecs > 0)
             {
-                fprintf(stdout, "Processing %s\n", f->fts_name);
+                fprintf(stderr, "Processing %s\n", f->fts_name);
                 processData(dataBuffers, nRecs);
+                fflush(stdout);
+                fflush(stderr);
             }
 
             // free memory
@@ -167,7 +169,11 @@ int main(int argc, char* argv[])
 
             processedFiles++;
             if (processedFiles % statusInterval == 0)
-                fprintf(stdout, "Processed %ld files (%.1f%%)\n", processedFiles, (float)processedFiles / (float)nFiles * 100.0);
+            {
+                fprintf(stderr, "Processed %ld files (%.1f%%)\n", processedFiles, (float)processedFiles / (float)nFiles * 100.0);
+                fflush(stderr);
+            }
+
 
         }
         f = fts_read(fts);
@@ -190,8 +196,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
     if (status != CDF_OK) 
     {
         printErrorMessage(status);
-        // Not necessarily an error. For example, some dates will have not calibration data.
-        fprintf(stdout, "Skipping this file.\n");
+        // fprintf(stderr, "Skipping this file.\n");
         return status;
     }
 
@@ -212,7 +217,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
     if (status != CDF_OK)
     {
         printErrorMessage(status);
-        fprintf(stdout, "Problem with data file. Skipping this file.\n");
+        fprintf(stderr, "Problem with data file. Skipping this file.\n");
         CDFcloseCDF(calCdfId);
         return status;
     }
@@ -221,7 +226,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
     if (status != CDF_OK)
     {
         printErrorMessage(status);
-        fprintf(stdout, "Problem with data file. Skipping this file.\n");
+        fprintf(stderr, "Problem with data file. Skipping this file.\n");
         CDFcloseCDF(calCdfId);
         return status;
     }
@@ -250,7 +255,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
         if (status != CDF_OK)
         {
             printErrorMessage(status);
-            fprintf(stdout, "Error reading variable %s. Skipping this file.\n", variables[i]);
+            fprintf(stderr, "Error reading variable %s. Skipping this file.\n", variables[i]);
             CDFcloseCDF(calCdfId);
             return status;
         }
@@ -265,7 +270,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
         if (varNum < CDF_OK)
         {
             printErrorMessage(varNum);
-            fprintf(stdout, "Error reading variable ID for %s. Skipping this file.\n", variables[i]);
+            fprintf(stderr, "Error reading variable ID for %s. Skipping this file.\n", variables[i]);
             CDFcloseCDF(calCdfId);
             return varNum;
         }
@@ -285,7 +290,7 @@ int loadData(const char * filename, uint8_t **dataBuffers, long *numberOfRecords
         if (status != CDF_OK)
         {
             printErrorMessage(status);
-            fprintf(stdout, "Error loading data for %s. Skipping this file.\n", variables[i]);
+            fprintf(stderr, "Error loading data for %s. Skipping this file.\n", variables[i]);
             CDFcloseCDF(calCdfId);
             return status;
         }
@@ -301,7 +306,7 @@ void printErrorMessage(CDFstatus status)
 {
     char errorMessage[CDF_STATUSTEXT_LEN + 1];
     CDFgetStatusText(status, errorMessage);
-    fprintf(stdout, "%s\n", errorMessage);
+    fprintf(stderr, "%s\n", errorMessage);
 }
 
 int processData(uint8_t **dataBuffers, long nRecs)
@@ -394,7 +399,7 @@ int processData(uint8_t **dataBuffers, long nRecs)
                 col = i / 66;
                 if (stddev > 0 && (double) RAW_IMAGE_V()[i] > (median + (GCR_SIGMAS * stddev)) && RAW_IMAGE_V()[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
                 {
-                    // fprintf(stdout, "%.2lf H %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, median: %.2lf, mad: %.2lf, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], median, mad, mean, stddev);
+                    // fprintf(stdout, "%.2lf V %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, median: %.2lf, mad: %.2lf, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], median, mad, mean, stddev);
                     imageGcrCountV++;
                     dayGcrCountV++;
                 }
@@ -404,7 +409,11 @@ int processData(uint8_t **dataBuffers, long nRecs)
         }
 
     }
-    fprintf(stdout, "\t%ld H GCRs, %ld V GCRs\n", dayGcrCountH, dayGcrCountV);
+    timeIndex = 0;
+    long year, month, day, hour, minute, second, millisecond;
+    EPOCHbreakdown(TIME(), &year, &month, &day, &hour, &minute, &second, &millisecond);
+    if (dayGcrCountH > 0 || dayGcrCountV > 0)
+        fprintf(stdout, "Processed %4ld%02ld%02ld %ld H GCRs %ld V GCRs\n", year, month, day, dayGcrCountH, dayGcrCountV);
 
     free(madWork);
     free(medianBuffer);
