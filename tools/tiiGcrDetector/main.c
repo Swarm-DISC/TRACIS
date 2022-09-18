@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
             processedFiles++;
             if (processedFiles % statusInterval == 0)
             {
-                fprintf(stderr, "Processed %ld files (%.1f%%)\n", processedFiles, (float)processedFiles / (float)nFiles * 100.0);
+                fprintf(stderr, "Processed %ld files (%.0f%%)\n", processedFiles, (float)processedFiles / (float)nFiles * 100.0);
                 fflush(stderr);
             }
 
