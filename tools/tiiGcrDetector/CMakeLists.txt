@@ -1,4 +1,4 @@
-# TRACIS Processor: tools/CMakeLists.txt
+# TRACIS Processor: tools/tracis/CMakeLists.txt
 
 # Copyright (C) 2022  Johnathan K Burchill
 
@@ -19,5 +19,10 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(tii_tracis)
 
-ADD_SUBDIRECTORY(tracis)
-ADD_SUBDIRECTORY(tiiGcrDetector)
+INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
+
+ADD_EXECUTABLE(tiiGcrDetector main.c)
+TARGET_LINK_LIBRARIES(tiiGcrDetector ${LIBS} -lm ${CDF} ${GSL_LIBRARY})
+
+install(TARGETS tiiGcrDetector DESTINATION $ENV{HOME}/bin)
+
