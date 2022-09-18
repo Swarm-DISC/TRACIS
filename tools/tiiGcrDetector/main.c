@@ -320,8 +320,6 @@ int processData(uint8_t **dataBuffers, long nRecs)
 {
     long timeIndex = 0;
 
-    double median = 0.0;
-    double mad = 0.0;
     double mean = 0.0;
     double stddev = 0.0;
 
@@ -334,9 +332,8 @@ int processData(uint8_t **dataBuffers, long nRecs)
     long dayGcrCountH = 0;
     long dayGcrCountV = 0;
 
-    uint16_t *medianBuffer = malloc(IMAGE_PIXELS * sizeof (uint16_t));
-    double *madWork = malloc(IMAGE_PIXELS * sizeof (double));
-    if (medianBuffer == NULL || madWork == NULL)
+    uint16_t *imageBuffer = malloc(IMAGE_PIXELS * sizeof (uint16_t));
+    if (imageBuffer == NULL)
     {
         return PROCESS_DATA_MEM;
     }
@@ -352,24 +349,21 @@ int processData(uint8_t **dataBuffers, long nRecs)
             {
                 // Disregard unphysical pixel values
                 if (RAW_IMAGE_H()[i] <= MAX_PIXEL_VALUE)
-                    medianBuffer[i] = RAW_IMAGE_H()[i];
+                    imageBuffer[i] = RAW_IMAGE_H()[i];
                 else
-                    medianBuffer[i] = 0;
+                    imageBuffer[i] = 0;
             }
-            median = gsl_stats_short_median(medianBuffer, 1, IMAGE_PIXELS);
-            // medianBuffer is now sorted
-            mad = gsl_stats_short_mad(medianBuffer, 1, IMAGE_PIXELS, madWork);
-            mean = gsl_stats_short_mean(medianBuffer, 1, IMAGE_PIXELS);
-            stddev = gsl_stats_short_sd(medianBuffer, 1, IMAGE_PIXELS);
+            mean = gsl_stats_short_mean(imageBuffer, 1, IMAGE_PIXELS);
+            stddev = gsl_stats_short_sd(imageBuffer, 1, IMAGE_PIXELS);
             EPOCHtoUnixTime(TIME_ADDR(), &unixTime, 1);
             for (int i = 0; i < IMAGE_PIXELS; i++)
             {
                 // if (mad > 0 && (double) RAW_IMAGE_H()[i] > (median + (GCR_SIGMAS * mad)))
                 row = i % 66;
                 col = i / 66;
-                if (stddev > 0 && (double) RAW_IMAGE_H()[i] > (median + (GCR_SIGMAS * stddev)) && RAW_IMAGE_H()[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
+                if (stddev > 0 && (double) RAW_IMAGE_H()[i] > (mean + (GCR_SIGMAS * stddev)) && RAW_IMAGE_H()[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
                 {
-                    // fprintf(stdout, "%.2lf H %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, median: %.2lf, mad: %.2lf, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], median, mad, mean, stddev);
+                    // fprintf(stdout, "%.2lf H %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], mean, stddev);
                     imageGcrCountH++;
                     dayGcrCountH++;
                 }
@@ -389,24 +383,21 @@ int processData(uint8_t **dataBuffers, long nRecs)
             {
                 // Disregard unphysical pixel values
                 if (RAW_IMAGE_V()[i] <= MAX_PIXEL_VALUE)
-                    medianBuffer[i] = RAW_IMAGE_V()[i];
+                    imageBuffer[i] = RAW_IMAGE_V()[i];
                 else
-                    medianBuffer[i] = 0;
+                    imageBuffer[i] = 0;
             }
-            median = gsl_stats_short_median(medianBuffer, 1, IMAGE_PIXELS);
-            // medianBuffer is now sorted
-            mad = gsl_stats_short_mad(medianBuffer, 1, IMAGE_PIXELS, madWork);
-            mean = gsl_stats_short_mean(medianBuffer, 1, IMAGE_PIXELS);
-            stddev = gsl_stats_short_sd(medianBuffer, 1, IMAGE_PIXELS);
+            mean = gsl_stats_short_mean(imageBuffer, 1, IMAGE_PIXELS);
+            stddev = gsl_stats_short_sd(imageBuffer, 1, IMAGE_PIXELS);
             EPOCHtoUnixTime(TIME_ADDR(), &unixTime, 1);
             for (int i = 0; i < IMAGE_PIXELS; i++)
             {
                 // if (mad > 0 && (double) RAW_IMAGE_H()[i] > (median + (GCR_SIGMAS * mad)))
                 row = i % 66;
                 col = i / 66;
-                if (stddev > 0 && (double) RAW_IMAGE_V()[i] > (median + (GCR_SIGMAS * stddev)) && RAW_IMAGE_V()[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
+                if (stddev > 0 && (double) RAW_IMAGE_V()[i] > (mean + (GCR_SIGMAS * stddev)) && RAW_IMAGE_V()[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
                 {
-                    // fprintf(stdout, "%.2lf V %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, median: %.2lf, mad: %.2lf, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], median, mad, mean, stddev);
+                    // fprintf(stdout, "%.2lf V %ld (%.1f,%.1f,%.1f), col %d, row %d, intensity: %d, mean: %.2lf, sd: %.2lf\n", unixTime, timeIndex+1, LAT(), LON(), RADIUS(), col+1, row+1, RAW_IMAGE_H()[i], mean, stddev);
                     imageGcrCountV++;
                     dayGcrCountV++;
                 }
@@ -422,8 +413,7 @@ int processData(uint8_t **dataBuffers, long nRecs)
     if (dayGcrCountH > 0 || dayGcrCountV > 0)
         fprintf(stdout, "Processed %4ld%02ld%02ld %ld H GCRs %ld V GCRs\n", year, month, day, dayGcrCountH, dayGcrCountV);
 
-    free(madWork);
-    free(medianBuffer);
+    free(imageBuffer);
     return PROCESS_DATA_OK;
 }
 
