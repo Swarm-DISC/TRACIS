@@ -22,7 +22,7 @@ PROJECT(tii_tracis)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 ADD_EXECUTABLE(tiiGcrDetector main.c)
-TARGET_LINK_LIBRARIES(tiiGcrDetector ${LIBS} -lm ${CDF} ${GSL_LIBRARY})
+TARGET_LINK_LIBRARIES(tiiGcrDetector ${LIBS} -lm ${CDF} ${GSL_LIBRARY} -lgslcblas)
 
 install(TARGETS tiiGcrDetector DESTINATION $ENV{HOME}/bin)
 
