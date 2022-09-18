@@ -64,6 +64,13 @@ void printErrorMessage(CDFstatus status);
 int processData(uint8_t **dataBuffers, long nRecs);
 void processDataBinned(uint8_t **dataBuffers, long nRecs);
 
+int alphabeticalFts(const FTSENT **a, const FTSENT **b)
+{
+    if (a == NULL || *a == NULL | b == NULL || *b == NULL)
+        return 0;
+    return strcmp((*a)->fts_name, (*b)->fts_name);
+}
+
 int main(int argc, char* argv[])
 {
     time_t currentTime;
@@ -103,7 +110,7 @@ int main(int argc, char* argv[])
 
     char *searchPath[2] = {NULL, NULL};
     searchPath[0] = (char *)directory;
-    FTS * fts = fts_open(searchPath, FTS_PHYSICAL | FTS_NOCHDIR, NULL);     
+    FTS * fts = fts_open(searchPath, FTS_LOGICAL | FTS_NOCHDIR | FTS_NOSTAT, &alphabeticalFts);     
     if (fts == NULL)
     {
         fprintf(stderr, "Could not open directory %s for reading.", directory);
@@ -127,7 +134,7 @@ int main(int argc, char* argv[])
     fprintf(stderr, "found %ld files\n", nFiles);
     // Reopen file listing for processing
     fts_close(fts);
-    fts = fts_open(searchPath, FTS_PHYSICAL | FTS_NOCHDIR, NULL);     
+    fts = fts_open(searchPath, FTS_LOGICAL | FTS_NOCHDIR | FTS_NOSTAT, &alphabeticalFts);     
     if (fts == NULL)
     {
         fprintf(stderr, "Could not open directory %s for reading.", directory);
