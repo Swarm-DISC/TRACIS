@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
             status = loadData(f->fts_path, dataBuffers, &nRecs);
             if (nRecs > 0)
             {
-                fprintf(stderr, "Processing %s\n", f->fts_name);
+                // fprintf(stderr, "Processing %s\n", f->fts_name);
                 processData(dataBuffers, nRecs);
                 fflush(stdout);
                 fflush(stderr);
