@@ -38,6 +38,7 @@
 #include <tii/analysis.h>
 #include <tii/timeseries.h>
 #include <tii/gainmap.h>
+#include <tii/detector.h>
 
 #include <stdio.h>
 #include <string.h>

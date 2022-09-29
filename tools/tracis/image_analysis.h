@@ -33,10 +33,6 @@ void energySpectrum(uint16_t *image, float *energyMap, float *radiusMap, double 
 
 void angleOfArrivalSpectrum(uint16_t *image, float *angleOfArrivalMap, float *radiusMap, double *gainMap, float *angleOfArrivalSpectrum, float *anglesOfArrival);
 
-void detectorCoordinates(char satellite, int sensor, float *xc, float *yc);
-
-float eofr(double r, float innerDomeVoltage, float mcpVoltage);
-
 int energyBin(float energy);
 
 
