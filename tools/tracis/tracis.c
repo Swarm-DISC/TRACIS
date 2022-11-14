@@ -53,9 +53,36 @@ char infoHeader[50];
 
 int main(int argc, char **argv)
 {
+
     time_t processingStartTime = time(NULL);
 
-    ImageStorage store;
+    if (argc != 4)
+    {
+        usage(argv[0]);
+        exit(1);
+    }
+
+    char * satDate = argv[1];
+    size_t sourceLen = strlen(satDate);
+
+    if (sourceLen != 9)
+    {
+        usage(argv[0]);
+	    exit(1);
+    }
+
+    char *modDir = argv[2];
+    char *outputDir = argv[3];
+
+    char satellite = satDate[0];
+    int year = 0;
+    int month = 0;
+    int day = 0;
+    sscanf(satDate+1, "%4d%2d%2d", &year, &month, &day);
+
+    sprintf(infoHeader, "TRACIS %c%s %04d-%02d-%02d: ", satellite, EXPORT_VERSION_STRING, year, month, day);
+
+    ImageStorage store = {0};
     initImageStorage(&store);
 
     char *efiFilenames = NULL;
@@ -68,38 +95,32 @@ int main(int argc, char **argv)
     char tracisHRFullFilename[CDF_PATHNAME_LEN+1+4];
     char tracisHRZipFilename[CDF_PATHNAME_LEN+1+4];
 
+    ImagePackets imagePackets = {0};
+    SciencePackets sciencePackets = {0};
+    LpTiiTimeSeries timeSeries = {0};
+
     double cdfTime = 0.0;
-    Ephemeres ephem, imageEphem, colSumEphem;
+    Ephemeres ephem = {0};
+    Ephemeres imageEphem = {0};
+    Ephemeres colSumEphem = {0};
     initEphemeres(&ephem);
     initEphemeres(&imageEphem);
     initEphemeres(&colSumEphem);
 
-    if (argc != 4)
-    {
-        usage(argv[0]);
-        exit(1);
-    }
+    uint16_t pixelsH[NUM_FULL_IMAGE_PIXELS] = {0};
+    uint16_t pixelsV[NUM_FULL_IMAGE_PIXELS] = {0};
+    FullImagePacket *fip1 = NULL;
+    FullImagePacket *fip2 = NULL;
+    FullImageContinuedPacket *cip1 = NULL;
+    FullImageContinuedPacket *cip2 = NULL;
+    ImagePair imagePair = {0};
+    ImageAuxData auxH = {0};
+    ImageAuxData auxV = {0};
+
+    ImageAnomalies h;
+    ImageAnomalies v;
 
     int status = 0;
-
-    char * satDate = argv[1];
-    size_t sourceLen = strlen(satDate);
-
-    if (sourceLen != 9)
-    {
-        usage(argv[0]);
-	    exit(1);
-    }
-    char *modDir = argv[2];
-    char *outputDir = argv[3];
-
-    char satellite = satDate[0];
-    int year = 0;
-    int month = 0;
-    int day = 0;
-    sscanf(satDate+1, "%4d%2d%2d", &year, &month, &day);
-
-    sprintf(infoHeader, "TRACIS %c%s %04d-%02d-%02d: ", satellite, EXPORT_VERSION_STRING, year, month, day);
 
     double dayStart = 0;
     double dayEnd = 0;
@@ -122,7 +143,7 @@ int main(int argc, char **argv)
     if (access(tracisLRZipFilename, F_OK) == 0 || access(tracisHRZipFilename, F_OK) == 0)
     {
         fprintf(stdout, "One or more %sTRACIS ZIP files exist. Skipping this date.\n", infoHeader);
-        exit(0);
+        goto cleanup;
     }
 
     // Data
@@ -169,8 +190,6 @@ int main(int argc, char **argv)
     sprintf(efiFilenames + nEfiFiles * FILENAME_MAX, "%s", modFilename);
     nEfiFiles++;
 
-    ImagePackets imagePackets;
-
     status = importImageryWithFilenames(satDate, &imagePackets, &efiFilenames, &nEfiFiles);
     if (status)
     {
@@ -184,17 +203,10 @@ int main(int argc, char **argv)
         goto cleanup;
     }
     
-    SciencePackets sciencePackets;
-    LpTiiTimeSeries timeSeries;
     initLpTiiTimeSeries(&timeSeries);
     importScience(satDate, &sciencePackets);
     getLpTiiTimeSeries(satDate[0], &sciencePackets, &timeSeries);
 
-    uint16_t pixelsH[NUM_FULL_IMAGE_PIXELS], pixelsV[NUM_FULL_IMAGE_PIXELS];
-    FullImagePacket * fip1, *fip2;
-    FullImageContinuedPacket *cip1, *cip2;
-    ImagePair imagePair;
-    ImageAuxData auxH, auxV;
     initializeImagePair(&imagePair, &auxH, pixelsH, &auxV, pixelsV);
     getFirstImagePair(&imagePackets, &imagePair);
  
@@ -205,9 +217,6 @@ int main(int argc, char **argv)
         if (!ignoreTime(timeSeries.lpTiiTime2Hz[i], dayStart, dayEnd))
             numberOfColumnSums++;
     }
-
-    ImageAnomalies h;
-    ImageAnomalies v;
 
     int pixelThreshold = 0;
 
