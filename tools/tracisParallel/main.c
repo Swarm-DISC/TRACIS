@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
         }
     }
 
-	if (argc !=  11)
+	if (argc !=  6)
 	{
 		printf("usage:\t%s startyyyymmdd endyyyymmdd modFileDir outputDir nthreads\n\t\tparallel processes Swarm TII L0 data to generate TRACIS product for specified satellite and date range.\n", argv[0]);
 		printf("\t%s --about\n\t\tprints copyright and license information.\n", argv[0]);
