@@ -387,7 +387,7 @@ void *runThread(void *a)
 	// run tracis command as a system() call because CDF library is not thread safe
 	int status = 0;
 	char command[3*FILENAME_MAX+256] = {0};
-	sprintf(command, "tracis %s%4d%02d%02d %s %s > /dev/null 2>&1 ", args->satLetter, args->year, args->month, args->day, args->modDir, args->outputDir);
+	sprintf(command, "tracis %s%4d%02d%02d %s %s >> %s/%s%4d%02d%02d.log 2>&1 ", args->satLetter, args->year, args->month, args->day, args->modDir, args->outputDir, args->outputDir, args->satLetter, args->year, args->month, args->day);
 	status = system(command);
 	args->returnValue = status;
 	args->threadRunning = false;
