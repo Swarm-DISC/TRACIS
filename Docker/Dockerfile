@@ -29,6 +29,7 @@ RUN apt -y install zlib1g-dev
 RUN apt -y install libxml2
 RUN apt -y install libxml2-dev
 RUN apt -y install libgsl-dev
+RUN apt -y install libncurses-dev
 RUN apt -y install git
 RUN apt -y install gdb
 RUN apt -y install cgdb

@@ -1,4 +1,4 @@
-# TRACIS Processor: tools/CMakeLists.txt
+# TRACIS: util/tracisParallel/CMakeLists.txt
 
 # Copyright (C) 2022  Johnathan K Burchill
 
@@ -15,10 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+project(tii_tracis)
+
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
-PROJECT(tii_tracis)
+SET(THREADS_PREFER_PTHREAD_FLAG ON)
+FIND_PACKAGE(Threads REQUIRED)
+FIND_LIBRARY(CURSES ncurses)
+ADD_EXECUTABLE(tracisParallel main.c)
+TARGET_LINK_LIBRARIES(tracisParallel PRIVATE -lcdf Threads::Threads ${CURSES})
 
-ADD_SUBDIRECTORY(tracis)
-ADD_SUBDIRECTORY(tracisParallel)
-ADD_SUBDIRECTORY(tiiGcrDetector)
+install(TARGETS tracisParallel DESTINATION $ENV{HOME}/bin)

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT(tii_tracis)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -30,6 +30,7 @@ else (CMAKE_BUILD_TYPE STREQUAL Debug)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -std=gnu99 ")
 endif(CMAKE_BUILD_TYPE STREQUAL Debug)
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/tools/tracis)
 
 # requires -lm on linux
 FIND_LIBRARY(MATH m)
