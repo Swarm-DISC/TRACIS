@@ -2,7 +2,7 @@
 
     TRACIS Processor: tools/tracis/tracis_settings.h
 
-    Copyright (C) 2022  Johnathan K Burchill
+    Copyright (C) 2023  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@
 #ifndef _TRACIS_SETTING_H
 #define _TRACIS_SETTING_H
 
-#define SOFTWARE_VERSION_STRING "TRACIS version 2022-11-06"
-#define SOFTWARE_VERSION "01.02"
+#define SOFTWARE_VERSION_STRING "TRACIS version 2023-03-17"
+#define SOFTWARE_VERSION "01.03"
 #define TRACIS_PRODUCT_CODE_LR "TISL1B" // TII Imagery / Spectra
 #define TRACIS_PRODUCT_CODE_HR "TISH1B" // Column sum spectra
 #define TRACIS_PRODUCT_TYPE "OPER"

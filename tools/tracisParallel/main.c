@@ -2,7 +2,7 @@
 
     TRACIS Processor: util/tracisParallel/main.c
 
-    Copyright (C) 2022  Johnathan K Burchill
+    Copyright (C) 2023  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 // Based on tiictParallel from TII Ion Drift Processor
 
 #include "tracis_settings.h"
-// #include "utilities.h"
 
 #include <stdio.h>
 

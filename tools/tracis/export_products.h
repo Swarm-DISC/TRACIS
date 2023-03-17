@@ -2,7 +2,7 @@
 
     TRACIS Processor: tools/tracis/export_products.h
 
-    Copyright (C) 2022  Johnathan K Burchill
+    Copyright (C) 2023  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,11 +38,9 @@ CDFstatus exportTracisCdfLR(const char *cdfFilename, const char satellite, const
 
 CDFstatus exportTracisCdfHR(const char *cdfFilename, const char satellite, const char *exportVersion, ImageStorage *store, size_t numberOfColumnSums, Ephemeres *ephem, char *efiFilenames, size_t nEfiFiles);
 
-int exportTracisHeader(const char *tracisFilename, const char *efiFilenames, size_t nFiles, time_t processingStartTime, time_t startTime, time_t stopTime, bool lowResolutionDataset);
-
 int exportProducts(char satellite, ImageStorage *store, size_t numberOfLRRecords, Ephemeres *imageEphem, char *tracisLRFilename, size_t numberOfHRRecords, Ephemeres *colSumEphem, char *tracisHRFilename, char *efiFilenames, size_t nEfiFiles, time_t processingStartTime);
 
-int archiveFiles(char *filenameBase);
+int archiveFiles(const char *filenameBase);
 
 enum EXPORT_FLAGS {
     EXPORT_OK = 0,

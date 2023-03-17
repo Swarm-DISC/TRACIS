@@ -2,7 +2,7 @@
 
 # TRACIS Processor: runcase.sh
 
-# Copyright (C) 2022  Johnathan K Burchill
+# Copyright (C) 2023  Johnathan K Burchill
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,5 +18,5 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Assumes all required input files for the specified date and satellite are provided in the example folder
-(cd build; make) && (cd example; rm -f SW_OPER_EFI?TIS*.{HDR,cdf,ZIP} && ../build/bin/tracis $1 . .)
+(cd build; make) && (cd example; rm -f SW_OPER_EFI?TIS*.ZIP && ../build/bin/tracis $1 . .)
 
