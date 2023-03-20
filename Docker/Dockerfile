@@ -53,11 +53,18 @@ ldconfig
 USER dataflow
 RUN cd /home/dataflow && \
 rm -rf cdf38_1-dist*
+RUN git clone https://github.com/JohnathanBurchill/libtii && \
+cd libtii && \
+mkdir build && \
+cd build && \
+cmake .. && \
+make
 USER root
-COPY tiilib.tar.gz /home/dataflow/.
-RUN cd / && \
-tar zxvf /home/dataflow/tiilib.tar.gz && \
-rm /home/dataflow/tiilib.tar.gz
+RUN cd /home/dataflow/libtii
+RUN mkdir /usr/local/include/tii
+RUN cp include/* /usr/local/include/tii
+RUN cp build/lib/tii/libtii.a /usr/local/lib/
+RUN cp build/lib/tiigraphics/libtiigraphics.a /usr/local/lib/
 USER dataflow
 RUN cd /home/dataflow && \
 rm -rf cdf38_0-dist*
