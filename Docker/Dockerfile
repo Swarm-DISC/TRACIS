@@ -30,6 +30,12 @@ RUN apt -y install libxml2
 RUN apt -y install libxml2-dev
 RUN apt -y install libgsl-dev
 RUN apt -y install libncurses-dev
+RUN apt -y install libavutil-dev
+RUN apt -y install libavcodec-dev
+RUN apt -y install libswscale-dev
+RUN apt -y install libavformat-dev
+RUN apt -y install libswresample-dev
+RUN apt -y install libx264-dev
 RUN apt -y install git
 RUN apt -y install gdb
 RUN apt -y install cgdb
@@ -37,6 +43,7 @@ RUN apt -y install vim
 RUN apt -y install pkg-config
 RUN apt -y install zip
 RUN apt -y install unzip
+
 RUN addgroup science
 RUN useradd -G science dataflow
 USER dataflow
@@ -53,18 +60,19 @@ ldconfig
 USER dataflow
 RUN cd /home/dataflow && \
 rm -rf cdf38_1-dist*
-RUN git clone https://github.com/JohnathanBurchill/libtii && \
+RUN cd /home/dataflow && \
+git clone https://github.com/JohnathanBurchill/libtii && \
 cd libtii && \
 mkdir build && \
 cd build && \
 cmake .. && \
 make
 USER root
-RUN cd /home/dataflow/libtii
 RUN mkdir /usr/local/include/tii
-RUN cp include/* /usr/local/include/tii
-RUN cp build/lib/tii/libtii.a /usr/local/lib/
-RUN cp build/lib/tiigraphics/libtiigraphics.a /usr/local/lib/
+RUN cd /home/dataflow/libtii && \
+cp include/* /usr/local/include/tii && \
+cp build/lib/tii/libtii.a /usr/local/lib/ && \
+cp build/lib/tiigraphics/libtiigraphics.a /usr/local/lib/
 USER dataflow
 RUN cd /home/dataflow && \
 rm -rf cdf38_0-dist*
