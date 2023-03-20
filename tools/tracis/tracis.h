@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 
-#define TRACIS_VERSION_STRING "1.0"
+#define TRACIS_VERSION_STRING "2.0"
 
 
 

@@ -268,11 +268,7 @@ void angleOfArrivalSpectrum(uint16_t *image, float *angleOfArrivalMap, float *ra
 
 int energyBin(float energy)
 {
-    // Mathematica generator: energies = {0}~Join~(10^Range[Log[10, 0.25], Log[10, 30.], (Log[10, 30./0.25]/39)])
-    // 15 bins
-
-    static float energyBinBoundaries[ENERGY_BINS+1] =  {0, 0.25, 0.351927, 0.495411, 0.697395, 0.981729, 1.38199, 1.94544, \
-2.73861, 3.85517, 5.42696, 7.63958, 10.7543, 15.1389, 21.3112, 30.};
+    static float energyBinBoundaries[ENERGY_BINS+1] =  {0, 0.25, 0.32164, 0.41381, 0.532392, 0.684956, 0.881237, 1.13377, 1.45866, 1.87666, 2.41443, 3.10632, 3.99647, 5.1417, 6.61512, 8.51076, 10.9496, 14.0874, 18.1243, 23.318, 30.};
 
     if (energy < energyBinBoundaries[0])
         return -1;
