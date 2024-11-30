@@ -92,6 +92,9 @@ typedef struct ImageStorage {
     float *energiesV;
     float *anglesOfArrival;
 
+    uint16_t *epdCountH;
+    uint16_t *epdCountV;
+
     // Obtained at 2 Hz
     double *colSumTimes;
     float *biasGridVoltageSettingH;

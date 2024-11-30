@@ -2,7 +2,7 @@
 
     TRACIS Processor: tools/tracis/image_analysis.c
 
-    Copyright (C) 2022  Johnathan K Burchill
+    Copyright (C) 2024  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <gsl/gsl_statistics_ushort.h>
 
 void calculateRadiusMap(char satellite, int sensor, float *radiusMap)
 {
@@ -279,3 +280,48 @@ int energyBin(float energy)
     
     return bin;
 }
+
+int epdDetect(uint16_t *image, uint16_t *workingImage, ImageAuxData *aux)
+{
+    if (image == NULL || workingImage == NULL || aux == NULL) {
+        return 0;
+    }
+
+    // HV has to be off for this algorithm
+    if (!aux->consistentImage || aux->BiasGridVoltageMonitor < -1 || aux->McpVoltageMonitor < -20 || aux->PhosphorVoltageMonitor > 50) {
+        return 0;
+    }
+
+    size_t imagePixels = IMAGE_COLS * IMAGE_ROWS;
+
+    float count = 0.0;
+
+    for (int i = 0; i < imagePixels; i++)
+    {
+        // Disregard unphysical pixel values
+        if (image[i] <= MAX_PIXEL_VALUE) {
+            workingImage[i] = image[i];
+        }
+        else {
+            workingImage[i] = 0;
+        }
+    }
+
+    double mean = gsl_stats_ushort_mean(workingImage, 1, imagePixels);
+    double stddev = gsl_stats_ushort_sd(workingImage, 1, imagePixels);
+    int row = 0, col = 0;
+    for (int i = 0; i < imagePixels; i++)
+    {
+        // if (mad > 0 && (double) RAW_IMAGE_H()[i] > (median + (GCR_SIGMAS * mad)))
+        row = i % 66;
+        col = i / 66;
+        if (stddev > 0 && (double) workingImage[i] > (mean + (GCR_SIGMAS * stddev)) && workingImage[i] <= MAX_PIXEL_VALUE && ((col >= MINCOL && row >= MINROW2 && row <= MAXROW2) || (row >= MINROW && row <= MAXROW)))
+        {
+            count++;
+        }
+    }
+
+    return count;
+
+}
+

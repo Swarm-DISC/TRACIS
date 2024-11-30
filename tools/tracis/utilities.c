@@ -140,6 +140,9 @@ void initImageStorage(ImageStorage *store)
     store->energiesV = NULL;
     store->anglesOfArrival = NULL;
 
+    store->epdCountH = NULL;
+    store->epdCountV = NULL;
+    
     store->colSumTimes = NULL;
     store->biasGridVoltageSettingH = NULL;
     store->biasGridVoltageSettingV = NULL;
@@ -152,7 +155,7 @@ void initImageStorage(ImageStorage *store)
     store->colSumEnergiesH = NULL;
     store->colSumEnergiesV = NULL;
     store->colSumImagingMode = NULL;
-    
+
 }
 
 int allocateImageMemory(ImageStorage *store, size_t numberOfImagePairs, size_t numberOfColumnSums)
@@ -254,6 +257,12 @@ int allocateImageMemory(ImageStorage *store, size_t numberOfImagePairs, size_t n
     if ((store->anglesOfArrival = (float*)malloc(numberOfImagePairs * ANGULAR_BINS * sizeof(float))) == NULL)
         return UTIL_ERR_MEMORY;
 
+    if ((store->epdCountH = malloc(numberOfImagePairs * sizeof *store->epdCountH)) == NULL)
+        return UTIL_ERR_MEMORY;
+
+    if ((store->epdCountV = malloc(numberOfImagePairs * sizeof *store->epdCountV)) == NULL)
+        return UTIL_ERR_MEMORY;
+
     // 2 Hz
 
     if ((store->colSumTimes = (double*)malloc(numberOfColumnSums * sizeof(double))) == NULL)
@@ -336,6 +345,9 @@ void freeImageMemory(ImageStorage *store)
     free(store->energiesH);
     free(store->energiesV);
     free(store->anglesOfArrival);
+    free(store->epdCountH);
+    free(store->epdCountV);
+
     free(store->colSumTimes);
     free(store->biasGridVoltageSettingH);
     free(store->biasGridVoltageSettingV);

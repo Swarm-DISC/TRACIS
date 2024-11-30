@@ -2,7 +2,7 @@
 
     TRACIS Processor: tools/tracis/tracis_settings.h
 
-    Copyright (C) 2023  Johnathan K Burchill
+    Copyright (C) 2024  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,14 +23,14 @@
 #ifndef _TRACIS_SETTING_H
 #define _TRACIS_SETTING_H
 
-#define SOFTWARE_VERSION_STRING "TRACIS version 2023-03-20"
-#define SOFTWARE_VERSION "02.00"
+#define SOFTWARE_VERSION_STRING "TRACIS version 2024-11-29"
+#define SOFTWARE_VERSION "03.00"
 #define TRACIS_PRODUCT_CODE_LR "TISL1B" // TII Imagery / Spectra
 #define TRACIS_PRODUCT_CODE_HR "TISH1B" // Column sum spectra
 #define TRACIS_PRODUCT_TYPE "OPER"
 #define TRACIS_FILE_TYPE_LR "EFIxTISL1B"
 #define TRACIS_FILE_TYPE_HR "EFIxTISH1B"
-#define EXPORT_VERSION_STRING "0201"
+#define EXPORT_VERSION_STRING "0301"
 
 #define TRACIS_BASE_FILENAME_LENGTH 55
 
@@ -39,6 +39,16 @@
 
 #define IMAGE_ROWS 66
 #define IMAGE_COLS 40
+
+// For GCR analysis
+#define GCR_BINNED_THRESHOLD 5000
+#define MAX_PIXEL_VALUE 2000
+#define GCR_SIGMAS 5
+#define MINCOL 19
+#define MINROW 19
+#define MAXROW 46
+#define MINROW2 4
+#define MAXROW2 61
 
 #define TRACIS_K 1.38e-23
 #define TRACIS_EPS 8.85e-12
@@ -51,7 +61,7 @@
 
 #define MAX_ALLOWED_CDF_GAP_SECONDS 86400.0 // CDF export split into separate files at gaps exceeding 24 Hours
 
-#define NUM_EXPORT_VARIABLES_LR 41
+#define NUM_EXPORT_VARIABLES_LR 43
 #define NUM_EXPORT_VARIABLES_HR 15
 
 #define CDF_GZIP_COMPRESSION_LEVEL 6L

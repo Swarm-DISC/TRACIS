@@ -22,6 +22,7 @@
 #define _IMAGE_ANALYSIS_H
 
 #include <stdint.h>
+#include <tii/isp.h>
 
 void calculateRadiusMap(char satellite, int sensor, float *radiusMap);
 
@@ -34,6 +35,8 @@ void energySpectrum(uint16_t *image, float *energyMap, float *radiusMap, double 
 void angleOfArrivalSpectrum(uint16_t *image, float *angleOfArrivalMap, float *radiusMap, double *gainMap, float *angleOfArrivalSpectrum, float *anglesOfArrival);
 
 int energyBin(float energy);
+
+int epdDetect(uint16_t *image, uint16_t *workingImage, ImageAuxData *aux);
 
 
 #endif // _IMAGE_ANALYSIS_H

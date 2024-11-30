@@ -385,7 +385,9 @@ void addAttributesLR(CDFid id, const char *cdfFilename, const char *efiFilenames
         {"Raw_angle_of_arrival_spectrum_V", "CDF_REAL4", "*", "V sensor angle-of-arrival spectrum from uncorrected image", 0, 1e6, "%5.2g"},
         {"Energies_H", "CDF_REAL4", "eV", "Mean energies of H sensor energy spectrum bins.", 0, 50.0, "%5.2f"},
         {"Energies_V", "CDF_REAL4", "eV", "Mean energies of V sensor energy spectrum bins.", 0, 50.0, "%5.2f"},
-        {"Angles_of_arrival", "CDF_REAL4", "Degrees", "Midpoint angles of angle-of-arrival spectrum bins.", -180.0, 180.0, "%6.2f"}
+        {"Angles_of_arrival", "CDF_REAL4", "Degrees", "Midpoint angles of angle-of-arrival spectrum bins.", -180.0, 180.0, "%6.2f"},
+        {"EPD_Count_H", "CDF_UINT2", "*", "H sensor energetic particle detection count", 0, 5000, "%4u"},
+        {"EPD_Count_V", "CDF_UINT2", "*", "V sensor energetic particle detection count", 0, 5000, "%4u"},
     };
 
     for (uint8_t i = 0; i < NUM_EXPORT_VARIABLES_LR; i++)

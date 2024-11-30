@@ -2,7 +2,7 @@
 
     TRACIS Processor: tools/tracis/tracis.c
 
-    Copyright (C) 2023  Johnathan K Burchill
+    Copyright (C) 2024  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include "export_products.h"
 #include "image_analysis.h"
 
+#include <bits/stdint-uintn.h>
 #include <tii/tii.h>
 
 #include <tii/isp.h>
@@ -42,7 +43,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
@@ -242,6 +242,12 @@ int main(int argc, char **argv)
     calculateRadiusMap(satellite, H_SENSOR, radiusMapH);
     calculateRadiusMap(satellite, V_SENSOR, radiusMapV);
 
+    uint16_t *workingImage = malloc(sizeof *workingImage * imageBytes);
+    if (workingImage == NULL) {
+        printf("%sOut of memory for working image.\n", infoHeader);
+        goto cleanup;
+    }
+
     for (size_t i = 0; i < imagePackets.numberOfImages-1;)
     {
 
@@ -335,6 +341,9 @@ int main(int argc, char **argv)
             store.anomalyFlagV[numberOfRecords] |= TRACIS_FLAG_BIFURCATION_ANOMALY;
         if (v.measlesAnomaly)
             store.anomalyFlagV[numberOfRecords] |= TRACIS_FLAG_MEASLES_ANOMALY;
+
+        store.epdCountH[numberOfRecords] = epdDetect(imagePair.pixelsH, workingImage, imagePair.auxH);
+        store.epdCountV[numberOfRecords] = epdDetect(imagePair.pixelsV, workingImage, imagePair.auxV);
 
         // Misc data
         store.ccdDarkCurrentH[numberOfRecords] = imagePair.auxH->CcdDarkCurrent;
@@ -456,6 +465,7 @@ cleanup:
     freeEphemeres(&imageEphem);
     freeEphemeres(&colSumEphem);
     free(efiFilenames);
+    free(workingImage);
 
     fflush(stdout);
 

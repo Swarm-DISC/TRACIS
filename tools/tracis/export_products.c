@@ -23,16 +23,13 @@
 
 #include "export_products.h"
 
-#include "tracis.h"
 #include "tracis_settings.h"
 #include "cdf_vars.h"
 #include "cdf_attrs.h"
 
 #include <libxml/xmlwriter.h>
 #include <sys/stat.h>
-#include <math.h>
 
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -108,6 +105,9 @@ CDFstatus exportTracisCdfLR(const char *cdfFilename, const char satellite, const
     createVarFrom2DVar(exportCdfId, "Energies_V", CDF_REAL4, 0, numberOfImagePairs-1, store->energiesV, ENERGY_BINS, true);
     createVarFrom2DVar(exportCdfId, "Angles_of_arrival", CDF_REAL4, 0, numberOfImagePairs-1, store->anglesOfArrival, ANGULAR_BINS, true);
 
+    createVarFrom1DVar(exportCdfId, "EPD_Count_H", CDF_UINT2, 0, numberOfImagePairs-1, store->epdCountH, true);
+    createVarFrom1DVar(exportCdfId, "EPD_Count_V", CDF_UINT2, 0, numberOfImagePairs-1, store->epdCountV, true);
+
     double minTime = store->imageTimes[0];
     double maxTime = store->imageTimes[numberOfImagePairs-1];
 
@@ -167,12 +167,13 @@ CDFstatus exportTracisCdfHR(const char *cdfFilename, const char satellite, const
 
     closeCdf(exportCdfId);
     status = archiveFiles(cdfFilename);
-    if (status == EXPORT_OK)
+    if (status == EXPORT_OK) {
         fprintf(stdout, "%sArchived %ld column sum records in CDF file in %s.ZIP\n", infoHeader, numberOfColumnSums, cdfFilename);
-    else
+    }
+    else {
         fprintf(stdout, "%sUnable to archive CDF file (check your zip program)\n", infoHeader);
-
-        fflush(stdout);
+    }
+    fflush(stdout);
 
     return status;
 

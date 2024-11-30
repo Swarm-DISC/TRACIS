@@ -23,7 +23,7 @@ PROJECT(tracis)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS} ${LIBXML2_INCLUDE_DIR})
 
 ADD_EXECUTABLE(tracis tracis.c cdf_vars.c cdf_attrs.c export_products.c load_inputs.c load_satellite_velocity.c utilities.c interpolate.c image_analysis.c)
-TARGET_LINK_LIBRARIES(tracis ${LIBS} -ltii -lm ${LIBXML2_LIBRARY} ${CDF})
+TARGET_LINK_LIBRARIES(tracis ${LIBS} -ltii -lm ${LIBXML2_LIBRARY} ${CDF} ${GSL_LIBRARY} -lgslcblas)
 
 install(TARGETS tracis DESTINATION $ENV{HOME}/bin)
 

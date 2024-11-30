@@ -2,7 +2,7 @@
 
     TRACIS Processor: util/tracisParallel/main.c
 
-    Copyright (C) 2023  Johnathan K Burchill
+    Copyright (C) 2024  Johnathan K Burchill
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
         if (strcmp(argv[i], "--about") == 0)
         {
             fprintf(stdout, "tracisParallel version %s.\n", TRACIS_PARALLEL_SOFTWARE_VERSION);
-            fprintf(stdout, "Copyright (C) 2022  Johnathan K Burchill\n");
+            fprintf(stdout, "Copyright (C) 2024  Johnathan K Burchill\n");
             fprintf(stdout, "This program comes with ABSOLUTELY NO WARRANTY.\n");
             fprintf(stdout, "This is free software, and you are welcome to redistribute it\n");
             fprintf(stdout, "under the terms of the GNU General Public License.\n");
@@ -103,7 +103,9 @@ int main(int argc, char *argv[])
 
 	if (argc !=  6)
 	{
-		printf("usage:\t%s startyyyymmdd endyyyymmdd modFileDir outputDir nthreads\n\t\tparallel processes Swarm TII L0 data to generate TRACIS product for specified satellite and date range.\n", argv[0]);
+		printf("usage:\t%s startyyyymmdd endyyyymmdd modFileDir outputDir nthreads\n", argv[0]);
+        printf("\t\tparallel processes Swarm TII L0 data to generate TRACIS product for specified satellite and date range.\n");
+        printf("\t\tMust be run from a directory containing L0 TII data files.\n");
 		printf("\t%s --about\n\t\tprints copyright and license information.\n", argv[0]);
 		exit(0);
 	}
