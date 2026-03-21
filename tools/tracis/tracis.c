@@ -30,7 +30,7 @@
 #include "export_products.h"
 #include "image_analysis.h"
 
-#include <bits/stdint-uintn.h>
+#include <stdint.h>
 #include <tii/tii.h>
 
 #include <tii/isp.h>
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
     sprintf(efiFilenames + nEfiFiles * FILENAME_MAX, "%s", modFilename);
     nEfiFiles++;
 
-    status = importImageryWithFilenames(satDate, &imagePackets, &efiFilenames, &nEfiFiles);
+    status = importImageryWithFilenames(satDate, ".", &imagePackets, &efiFilenames, &nEfiFiles);
     if (status)
     {
         fprintf(stderr, "%sCould not import image data.\n", infoHeader);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
     }
     
     initLpTiiTimeSeries(&timeSeries);
-    importScience(satDate, &sciencePackets);
+    importScience(satDate, ".", &sciencePackets);
     getLpTiiTimeSeries(satDate[0], &sciencePackets, &timeSeries);
 
     initializeImagePair(&imagePair, &auxH, pixelsH, &auxV, pixelsV);
@@ -270,7 +270,7 @@ int main(int argc, char **argv)
         store.validImageryV[numberOfRecords] = imagePair.gotImageV;
 
         // Imaging mode
-        store.imagingMode[numberOfRecords] = (scienceMode(imagePair.auxH) && scienceMode(imagePair.auxV));
+        store.imagingMode[numberOfRecords] = scienceMode(&imagePair, &timeSeries);
 
         // Copy imagery to image time series
         memcpy(store.rawImagesH + numberOfRecords * imageBytes, imagePair.pixelsH, imageBytes);
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
         angleOfArrivalSpectrum(imagePair.pixelsV, store.angleOfArrivalMapV + numberOfRecords * IMAGE_COLS * IMAGE_ROWS, radiusMapV, NULL, store.rawAngleOfArrivalSpectrumV + numberOfRecords * ANGULAR_BINS, NULL);
 
         // Gain corrected images and anomalies
-        latestConfigValues(&imagePair, &timeSeries, &pixelThreshold, NULL, NULL, NULL, NULL, NULL, NULL);
+        latestConfigValues(imagePair.secondsSince1970, &timeSeries, &pixelThreshold, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
         applyImagePairGainMaps(&imagePair, pixelThreshold, NULL, NULL);
 
         memcpy(store.correctedImagesH + numberOfRecords * imageBytes, imagePair.pixelsH, imageBytes);

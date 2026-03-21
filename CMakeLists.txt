@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 PROJECT(tii_tracis)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -39,8 +39,16 @@ FIND_LIBRARY(MATH m)
 FIND_PACKAGE(ZLIB REQUIRED)
 FIND_PACKAGE(LibXml2)
 FIND_LIBRARY(CDF cdf)
+if(NOT CDF)
+    message(FATAL_ERROR "NASA CDF library not found")
+endif()
 FIND_LIBRARY(TII tii)
+if(NOT TII)
+    message(FATAL_ERROR "libtii not found (https://github.com/JohnathanBurchill/libtii)")
+endif()
 FIND_PACKAGE(GSL REQUIRED)
+
+INCLUDE_DIRECTORIES(${GSL_INCLUDE_DIRS})
 
 ADD_SUBDIRECTORY(tools)
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 PROJECT(tracis)
 
@@ -23,7 +23,7 @@ PROJECT(tracis)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS} ${LIBXML2_INCLUDE_DIR})
 
 ADD_EXECUTABLE(tracis tracis.c cdf_vars.c cdf_attrs.c export_products.c load_inputs.c load_satellite_velocity.c utilities.c interpolate.c image_analysis.c)
-TARGET_LINK_LIBRARIES(tracis ${LIBS} -ltii -lm ${LIBXML2_LIBRARY} ${CDF} ${GSL_LIBRARY} -lgslcblas)
+TARGET_LINK_LIBRARIES(tracis ${LIBS} ${TII} -lm ${LIBXML2_LIBRARY} ${CDF} ${GSL_LIBRARIES})
 
 install(TARGETS tracis DESTINATION $ENV{HOME}/bin)
 

@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 PROJECT(tii_tracis)
 
 INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 ADD_EXECUTABLE(tiiGcrDetector main.c)
-TARGET_LINK_LIBRARIES(tiiGcrDetector ${LIBS} -lm ${CDF} ${GSL_LIBRARY} -lgslcblas)
+TARGET_LINK_LIBRARIES(tiiGcrDetector ${LIBS} -lm ${CDF} ${GSL_LIBRARIES})
 
 install(TARGETS tiiGcrDetector DESTINATION $ENV{HOME}/bin)
 
