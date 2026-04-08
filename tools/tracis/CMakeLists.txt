@@ -25,8 +25,8 @@ INCLUDE_DIRECTORIES(${INCLUDE_DIRS} ${LIBXML2_INCLUDE_DIR})
 ADD_EXECUTABLE(tracis tracis.c cdf_vars.c cdf_attrs.c export_products.c load_inputs.c load_satellite_velocity.c utilities.c interpolate.c image_analysis.c)
 TARGET_LINK_LIBRARIES(tracis ${LIBS} ${TII} -lm ${LIBXML2_LIBRARY} ${CDF} ${GSL_LIBRARIES})
 
-install(TARGETS tracis DESTINATION $ENV{HOME}/bin)
+install(TARGETS tracis DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(PROGRAMS parallel_process_tracis.sh DESTINATION $ENV{HOME}/bin)
-install(PROGRAMS process_tracis.sh DESTINATION $ENV{HOME}/bin)
+install(PROGRAMS parallel_process_tracis.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS process_tracis.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
 

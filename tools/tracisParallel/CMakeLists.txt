@@ -25,4 +25,4 @@ FIND_LIBRARY(CURSES ncurses)
 ADD_EXECUTABLE(tracisParallel main.c)
 TARGET_LINK_LIBRARIES(tracisParallel PRIVATE ${CDF} Threads::Threads ${CURSES})
 
-install(TARGETS tracisParallel DESTINATION $ENV{HOME}/bin)
+install(TARGETS tracisParallel DESTINATION ${CMAKE_INSTALL_BINDIR})
